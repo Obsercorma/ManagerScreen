@@ -1,48 +1,104 @@
-#import RPi.GPIO as gpio
-from st7920 import ST7920
 from time import sleep
+from st7920 import ST7920
+import asyncio
+import RPi.GPIO as GPIO
+from gitPage import GitPageManager
+from depotPage import DepotPageManager
+from homePage import HomePageManager
 
-#RST_PIN = 18
+stateProcess = True
+pos_encoder = 0
+state_chencoder = 0
+selectedCallBack = None
+selectedClbkName:list[str] = []
 
-#gpio.setmode(gpio.BCM)
-#gpio.setup(RST_PIN, gpio.IN)
-#gpio.output(RST_PIN,gpio.HIGH)
-#sleep(0.1)
-#gpio.output(RST_PIN,gpio.LOW)
-
+currentPage = "homePage"
+defaultPage = "homePage"
+pageOptions = {
+    "homePage":HomePageManager,
+    "gitPage":GitPageManager,
+    "depotPage":DepotPageManager
+}
 scr = ST7920()
 scr.set_rotation(3)
-scr.clear()
-scr.redraw()
-#exit(0)
-#sleep(0.1)
+for page in pageOptions.items():
+    pageOptions[page[0]] = pageOptions[page[0]](scr)
 
-#try:
-#       for a in range(11):
-#scr.clear()
-#scr.redraw()
-#sleep(0.1)
-scr.put_text("Portfolio",0,0)
-scr.put_text("V1.14.18",0,10)
-scr.put_text("Online",0,20)
-scr.put_text("W:0 E:0",0,30)
-scr.line(0,40,63,40)
-scr.redraw()
-sleep(1.0)
-#except:
-#       pass
-#scr.close()
-#gpio.cleanup()
-sleep(0.1)
-scr.put_text("Myth. Bot",0,50)
-scr.put_text("V1.2.2",0,60)
-scr.put_text("Online",0,70)
-scr.line(0,80,63,80)
-scr.redraw()
-#sleep(2.0)
-#scr.clear()
-sleep(0.1)
-#scr.put_text("test",0,45)
-#scr.redraw()
+CLK = 17
+SW = 27
+DT = 18
+PWR_ENC = 24
 
-scr.close()
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(PWR_ENC, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(CLK, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(DT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(SW, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+clk_last_state = GPIO.input(CLK)
+
+async def encoder_process():
+    global clk_last_state, pos_encoder, state_chencoder, pageOptions, currentPage, selectedClbkName, defaultPage
+    tmp_pos = pos_encoder
+    #selectedClbkName = pageOptions[currentPage].getClBkName().split(":")
+    while stateProcess:
+        if tmp_pos != pos_encoder:
+            scr.clear()
+            scr.redraw()
+            pageOptions[currentPage].drawListOptions(pos_encoder)
+            #if (clbkName:=pageOptions[currentPage].getClBkName()) != selectedClbkName:
+            #    selectedClbkName = clbkName.split(":")
+            # gitHome()
+            # drawListOptions()
+            tmp_pos = pos_encoder
+            #await asyncio.sleep(0.1)
+        clk_state = GPIO.input(CLK)
+        dt_state = GPIO.input(DT)
+        if clk_state != clk_last_state:
+            if dt_state != clk_state:
+                state_chencoder += 1
+                pos_encoder += 1 if (pos_encoder<(len(pageOptions)-1) and (state_chencoder%2)==0) else 0
+                #print("Rotation dans le sens horaire")
+            else:
+                state_chencoder -= 1
+                pos_encoder -= 1 if (pos_encoder>0 and (state_chencoder%2)==0) else 0
+                #print("Rotation dans le sens antihoraire")
+                print(pos_encoder)
+        if GPIO.input(SW) == GPIO.LOW:
+            selectedClbkName = pageOptions[currentPage].getClBkName().split(":")
+            toRoute = pageOptions[currentPage].getOption(selectedClbkName[0])
+            pos_encoder = 0
+            print(toRoute, selectedClbkName[0])
+            scr.clear()
+            scr.redraw()
+            if toRoute["target"] == defaultPage:
+                currentPage = defaultPage
+                pageOptions[currentPage].drawListOptions(pos_encoder)
+            else:
+                tmpData = toRoute["target"].split(":")
+                print(tmpData)
+                currentPage = tmpData[0]
+                pageOptions[currentPage].setData([selectedClbkName[1]])
+                pageOptions[currentPage].drawListOptions(pos_encoder)
+            print("SelectedCallBackName: ", selectedClbkName)
+            await asyncio.sleep(0.1)
+        clk_last_state = clk_state
+        await asyncio.sleep(0.01)  # Délai court pour éviter les rebonds
+
+
+if __name__ == "__main__":
+    try:
+        scr.clear()
+        scr.redraw()
+        sleep(0.1)
+        pageOptions[currentPage].drawListOptions(pos_encoder)
+        asyncio.run(encoder_process())
+    except KeyboardInterrupt:
+        stateProcess = False
+        print("Stopping...")
+    finally:
+        scr.close()
+        GPIO.cleanup()
+
+
+

@@ -3,95 +3,73 @@ from st7920 import ST7920
 import asyncio
 import RPi.GPIO as GPIO
 
-stateProcess = True
-pos_encoder = 0
-state_chencoder = 0
-selectedCallBack = None
+#stateProcess = True
+#pos_encoder = 0
+#state_chencoder = 0
+#selectedCallBack = None
+#
+#CLK = 17
+#SW = 27
+#DT = 18
+#PWR_ENC = 24
+#
+#GPIO.setmode(GPIO.BCM)
+#GPIO.setup(PWR_ENC, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#GPIO.setup(CLK, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#GPIO.setup(DT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#GPIO.setup(SW, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#
+#clk_last_state = GPIO.input(CLK)
 
-CLK = 17
-SW = 27
-DT = 18
-PWR_ENC = 24
+class GitPageManager:
+	lstOptions = [{
+			"name":"Retour",
+			"target":"homePage:none",
+		},{
+			"name":"Portfolio",
+			"target":"depotPage:portfolio"
+		},{
+			"name":"ArteBot",
+			"target":"depotPage:arteBot"
+		}
+	]
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(PWR_ENC, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(CLK, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(DT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(SW, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	def __init__(self, scr):
+		self.toRoute:str = None
+		self.selectedClbkName = ""
+		self.scr = scr
 
-clk_last_state = GPIO.input(CLK)
+	def setData(self, params:list[str]):
+		pass
 
-def gitHome():
-	scr.put_text("Depots Git",0,5)
-	scr.redraw()
+	def getClBkName(self):
+#		print("SelectedCallBackName: ", self.selectedClbkName)
+		return self.selectedClbkName
 
-def goBack():
-	pass
-
-def repoPage():
-	pass
-
-lstOptions = [
-    {
-        "name":"Retour",
-        "clbk":goBack
-    },
-    {
-        "name":"Portfolio",
-        "clbk":repoPage,
-        "target":"git:portfolio"
-    },
-    {
-        "name":"ArteBot",
-        "clbk":repoPage,
-        "target":"git:artebot"
-    }
-]
-
-def drawListOptions():
-	global pos_encoder, lstOptions
-	posYItem = 15
-	for option in range(0,len(lstOptions)):
-		if pos_encoder == option:
-			selectedCallBack = lstOptions[option]["clbk"]
-			scr.fill_rect(0,posYItem,5,(posYItem+10))
-			scr.put_text(lstOptions[option]["name"],10,(posYItem+3))
+	def getOption(self, clbkName:str) -> dict:
+		for opt in self.lstOptions:
+			if opt["target"].split(":")[0] == clbkName:
+				return opt
 		else:
-			scr.rect(0,posYItem,5,(posYItem+10))
-			scr.put_text(lstOptions[option]["name"],10,(posYItem+3))
-		posYItem += 15
-	scr.redraw()
+			return {}
 
-async def encoder_process():
-	global clk_last_state, pos_encoder, state_chencoder
-	tmp_pos = pos_encoder
-	while stateProcess:
-		if tmp_pos != pos_encoder:
-			scr.clear()
-			scr.redraw()
-			gitHome()
-			drawListOptions()
-			tmp_pos = pos_encoder
-			#await asyncio.sleep(0.1)
-		clk_state = GPIO.input(CLK)
-		dt_state = GPIO.input(DT)
-		if clk_state != clk_last_state:
-			if dt_state != clk_state:
-				state_chencoder += 1
-				pos_encoder += 1 if (pos_encoder<(len(lstOptions)-1) and (state_chencoder%2)==0) else 0
-				print("Rotation dans le sens horaire")
+	def drawListOptions(self, pos_encoder:int):
+		posYItem = 15
+		self.scr.put_text("Depots Git",0,5)
+		for option in range(0,len(self.lstOptions)):
+			if pos_encoder == option:
+				self.selectedClbkName = self.lstOptions[option]["target"]
+#				print("SelectedCallBackName: ", self.selectedClbkName)
+				self.scr.fill_rect(0,posYItem,5,(posYItem+10))
+				self.scr.put_text(self.lstOptions[option]["name"],10,(posYItem+3))
 			else:
-				state_chencoder -= 1
-				pos_encoder -= 1 if (pos_encoder>0 and (state_chencoder%2)==0) else 0
-				print("Rotation dans le sens antihoraire")
-			print(pos_encoder)
-		if GPIO.input(SW) == GPIO.LOW:
-			print("Bouton enfoncé")
-		clk_last_state = clk_state
-		await asyncio.sleep(0.01)  # Délai court pour éviter les rebonds
+				self.scr.rect(0,posYItem,5,(posYItem+10))
+				self.scr.put_text(self.lstOptions[option]["name"],10,(posYItem+3))
+			posYItem += 15
+		self.scr.redraw()
 
-try:
-	if __name__ == "__main__":
+if __name__ == "__main__":
+	try:
 		scr = ST7920()
 		scr.set_rotation(3)
 		scr.clear()
@@ -100,10 +78,10 @@ try:
 		gitHome()
 		drawListOptions()
 		asyncio.run(encoder_process())
-except KeyboardInterrupt:
-	stateProcess = False
-	print("Stopping...")
-finally:
-	scr.close()
-	GPIO.cleanup()
+	except KeyboardInterrupt:
+		stateProcess = False
+		print("Stopping...")
+	finally:
+		scr.close()
+		GPIO.cleanup()
 
