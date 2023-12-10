@@ -49,7 +49,7 @@ async def encoder_process():
     startingTime = time()
     while stateProcess:
         if (time() - startingTime) > 2.0:
-            with open("start_process.txt", 'r') as f:
+            with open("process.txt", 'r') as f:
                 if f.read().strip() == "stop":
                     stateProcess = False
                     startingTime = time()
