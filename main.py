@@ -78,7 +78,7 @@ async def encoder_process():
                 tmpData = toRoute["target"].split(":")
                 print(tmpData)
                 currentPage = tmpData[0]
-                pageOptions[currentPage].setData([selectedClbkName[1], tmpData[2] if len(tmpData)>1 else "nil"])
+                pageOptions[currentPage].setData([selectedClbkName[1], tmpData[1:]])
                 pageOptions[currentPage].drawListOptions(pos_encoder)
             print("SelectedCallBackName: ", selectedClbkName)
             await asyncio.sleep(0.1)
