@@ -34,7 +34,7 @@ class DepotPageManager:
         for line in results:
             version_number = re.search(r"^(\d\.?){3,}", line)
             if version_number is not None:
-                return version_number.string
+                return version_number.string.split("\x1b")[0]
         return version_number
 
     def getOption(self, clbkName:str) -> dict:
