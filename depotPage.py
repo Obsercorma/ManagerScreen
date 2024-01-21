@@ -29,6 +29,8 @@ class DepotPageManager:
         results = cmd.readlines()[1:]
         cmd.close()
 
+        print(results)
+
         version_number = None
         # Extract the version number using regular expressions
         for line in results:
