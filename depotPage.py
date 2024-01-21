@@ -29,12 +29,10 @@ class DepotPageManager:
         results = cmd.readlines()
         cmd.close()
 
-        print(results)
-
         version_number = None
         # Extract the version number using regular expressions
         for line in results:
-            version_number = re.match(r"^(\d\.?){3,}", line)
+            version_number = re.search(r"^(\d\.?){3,}", line)
             if version_number is not None:
                 return version_number.string
         return version_number
