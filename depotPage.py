@@ -19,7 +19,7 @@ class DepotPageManager:
     def setData(self, params:list[str]):
         self.repoName = params[0]
         self.folderRepo = params[1]
-        print(self.repoName)
+        print(self.repoName, self.folderRepo)
 
     def getClBkName(self):
         return self.selectedClbkName
