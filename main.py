@@ -20,7 +20,7 @@ pageOptions = {
     "depotPage":DepotPageManager
 }
 scr = ST7920()
-scr.set_rotation(3)
+scr.set_rotation(1)
 for page in pageOptions.items():
     pageOptions[page[0]] = pageOptions[page[0]](scr)
 
