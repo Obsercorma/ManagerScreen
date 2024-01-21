@@ -2,7 +2,7 @@ import os
 import re
 
 def getVersionProject():
-    cmd = os.popen(f"ssh -t git@192.168.1.4 'cd MythologicArteBot.git/ ; git show HEAD:VERSION'")
+    cmd = os.popen(f"ssh -t git@192.168.1.4 'cd PortfolioMythologicArte.git/ ; git show HEAD:VERSION'")
     results = cmd.readlines()
     cmd.close()
 
