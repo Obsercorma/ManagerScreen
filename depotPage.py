@@ -1,3 +1,6 @@
+import os
+import re
+
 class DepotPageManager:
     lstOptions = [{
 			"name":"Retour",
@@ -11,13 +14,28 @@ class DepotPageManager:
         self.selectedClbkName = ""
         self.scr = scr
         self.repoName = "nil"
+        self.folderRepo = "nil"
 
     def setData(self, params:list[str]):
         self.repoName = params[0]
+        self.folderRepo = params[1]
         print(self.repoName)
 
     def getClBkName(self):
         return self.selectedClbkName
+    
+    def getVersionProject(self):
+        cmd = os.popen(f"ssh -t git@192.168.1.4 'cd {self.folderRepo}/ ; git show HEAD:VERSION'")
+        results = cmd.readlines()[1:]
+        cmd.close()
+
+        version_number = None
+        # Extract the version number using regular expressions
+        for line in results:
+            version_number = re.match(r"(\d\.?){3}", line)
+            if version_number is not None:
+                return version_number.string
+        return version_number
 
     def getOption(self, clbkName:str) -> dict:
         for opt in self.lstOptions:
@@ -39,10 +57,10 @@ class DepotPageManager:
                 self.scr.put_text(self.lstOptions[option]["name"],10,(posYItem+3))
             posYItem += 15
         posYItem+=15
-        self.scr.put_text(f"V:X.X.X",0,posYItem)
-        posYItem+=15
-        self.scr.put_text(f"S:Online",0,posYItem)
-        posYItem+=15
-        self.scr.put_text(f"W:0 E:0",0,posYItem)
+        self.scr.put_text(f"V:{self.getVersionProject()}",0,posYItem)
+        # posYItem+=15
+        # self.scr.put_text(f"S:Online",0,posYItem)
+        # posYItem+=15
+        # self.scr.put_text(f"W:0 E:0",0,posYItem)
         self.scr.redraw()
 

@@ -24,13 +24,13 @@ import RPi.GPIO as GPIO
 class GitPageManager:
 	lstOptions = [{
 			"name":"Retour",
-			"target":"homePage:none",
+			"target":"homePage:none"
 		},{
 			"name":"Portfolio",
-			"target":"depotPage:portfolio"
+			"target":"depotPage:portfolio:PortfolioMythologicArte.git"
 		},{
 			"name":"ArteBot",
-			"target":"depotPage:arteBot"
+			"target":"depotPage:arteBot:MythologicArteBot.git"
 		}
 	]
 

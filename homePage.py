@@ -26,6 +26,11 @@ class HomePageManager:
 			"name":"Git",
 			"target":"gitPage:none",
 			"isVisible":True
+		},
+		{
+			"name":"Snippets",
+			"isVisible":True,
+			"target":"snippetsPage:none"
 		}
 	]
 
