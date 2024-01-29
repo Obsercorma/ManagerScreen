@@ -16,7 +16,8 @@ class SnippetsPageManager:
         self.scr = scr
         self.snippets = {}
         with open("snippets.json", 'r') as f:
-            for snippet in json.load(f):
+            data = json.load(f)
+            for snippet in data:
                 self.snippets[snippet["title"]] = {
                     title:snippet["title"],
                     command:snippet["command"]
