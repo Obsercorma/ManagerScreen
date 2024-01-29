@@ -19,8 +19,8 @@ class SnippetsPageManager:
             data = json.load(f)
             for snippet in data:
                 self.snippets[snippet["title"]] = {
-                    title:snippet["title"],
-                    command:snippet["command"]
+                    "title":snippet["title"],
+                    "command":snippet["command"]
                 }
 
     def getClBkName(self):
