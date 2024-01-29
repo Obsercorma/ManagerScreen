@@ -25,7 +25,7 @@ class DepotPageManager:
         return self.selectedClbkName
     
     def getVersionProject(self):
-        cmd = os.popen(f"""ssh -T git@192.168.1.4 -i ../.ssh/id_rsa.pub 'cd {self.folderRepo}/ && git show HEAD:VERSION'""")
+        cmd = os.popen(f"""ssh -T git@192.168.1.4 -i /home/techrusse/.ssh/id_rsa.pub 'cd {self.folderRepo}/ && git show HEAD:VERSION'""")
         results = cmd.readlines()
         cmd.close()
 
