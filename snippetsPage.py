@@ -57,7 +57,7 @@ class SnippetsPageManager:
 
     def drawListOptions(self, pos_encoder:int):
         posYItem = 15
-        self.scr.put_text(self.repoName,0,5)
+        self.scr.put_text("Snippets",0,5)
         for option in range(0,len(self.lstOptions)):
             if pos_encoder == option:
                 self.selectedClbkName = self.lstOptions[option]["target"]
