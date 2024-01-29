@@ -16,10 +16,10 @@ class SnippetsPageManager:
         self.scr = scr
         self.snippets = {}
         with open("snippets.json", 'r') as f:
-            for snippet in json.load(f):
-                self.snippets[snippet["name"]] = {
-                    title:snippet["title"],
-                    command:snippet["command"]
+            for snippet in json.load(f).items():
+                self.snippets[snippet[0]] = {
+                    title:snippet[1]["title"],
+                    command:snippet[1]["command"]
                 }
 
     def getClBkName(self):
