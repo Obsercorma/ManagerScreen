@@ -1,10 +1,9 @@
-{
-    "stopprocess":{
+[
+    {
         "title":"Stop",
         "command":"echo \"stop\" > ./start_process.txt"
-    },
-    "updateAndRestart":{
+    },{
         "title":"Update",
         "command":"sh ./snippets/updateRestart.sh"
     }
-}
+]
