@@ -23,6 +23,9 @@ class SnippetsPageManager:
                     "command":snippet["command"]
                 }
 
+    def setData(self, params:list[str]):
+        pass
+
     def getClBkName(self):
         return self.selectedClbkName
     
