@@ -43,7 +43,7 @@ async def encoder_process():
     global clk_last_state, pos_encoder, state_chencoder, pageOptions, currentPage, selectedClbkName, defaultPage
     tmp_pos = pos_encoder
     #selectedClbkName = pageOptions[currentPage].getClBkName().split(":")
-    with open("start_process.txt", 'r') as f:
+    with open("process.txt", 'r') as f:
         if f.read().strip() == "start":
             stateProcess = True
     startingTime = time()
