@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time
 from st7920 import ST7920
 import asyncio
 import RPi.GPIO as GPIO
@@ -6,7 +6,7 @@ from gitPage import GitPageManager
 from depotPage import DepotPageManager
 from homePage import HomePageManager
 
-stateProcess = True
+stateProcess = False
 pos_encoder = 0
 state_chencoder = 0
 selectedCallBack = None
@@ -41,7 +41,19 @@ async def encoder_process():
     global clk_last_state, pos_encoder, state_chencoder, pageOptions, currentPage, selectedClbkName, defaultPage
     tmp_pos = pos_encoder
     #selectedClbkName = pageOptions[currentPage].getClBkName().split(":")
+    with open("start_process.txt", 'r') as f:
+        if f.read().strip() == "start":
+            stateProcess = True
+    startingTime = time()
     while stateProcess:
+        if (time() - startingTime) > 2.0:
+            with open("start_process.txt", 'r+') as f:
+                if f.read().strip() == "stop":
+                    stateProcess = False
+                    f.write("start")
+                    startingTime = time()
+                    print("Stopping process...")
+                    break
         if tmp_pos != pos_encoder:
             scr.clear()
             scr.redraw()
