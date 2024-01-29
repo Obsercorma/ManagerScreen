@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 from gitPage import GitPageManager
 from depotPage import DepotPageManager
 from homePage import HomePageManager
+from snippetsPage import SnippetsPageManager
 
 stateProcess = False
 pos_encoder = 0
@@ -17,7 +18,8 @@ defaultPage = "homePage"
 pageOptions = {
     "homePage":HomePageManager,
     "gitPage":GitPageManager,
-    "depotPage":DepotPageManager
+    "depotPage":DepotPageManager,
+    "snippetsPage":SnippetsPageManager
 }
 scr = ST7920()
 scr.set_rotation(1)

@@ -1,0 +1,10 @@
+{
+    "StopService":{
+        "title":"Stop",
+        "command":"echo \"stop\" > ./start_process.txt"
+    },
+    "Update":{
+        "title":"Update",
+        "command":"sh ./snippets/updateRestart.sh"
+    }
+}
