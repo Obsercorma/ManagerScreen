@@ -35,6 +35,10 @@ class GitPageManager:
 		{
 			"name":"ObsercormaLang",
 			"target":"depotPage:obsLang:ObsercormaLang.git"
+		},
+		{
+			"name":"RoadTripGPS",
+			"target":"depotPage:RoadTripGPS:RoadTripGPS.git"
 		}
 	]
 
