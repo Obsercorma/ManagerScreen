@@ -34,7 +34,7 @@ class GitPageManager:
 		},
 		{
 			"name":"ObsercormaLang",
-			"target":"depotPage:obsercormaLang:ObsercormaLang.git"
+			"target":"depotPage:obsLang:ObsercormaLang.git"
 		}
 	]
 
