@@ -53,6 +53,10 @@ async def encoder_process():
                 if f.read().strip() == "stop":
                     stateProcess = False
                     startingTime = time()
+                    scr.clear()
+                    scr.put_text("Stopping", 0, 5)
+                    scr.put_text("process...", 0, 20)
+                    scr.redraw()
                     print("Stopping process...")
                     break
         if tmp_pos != pos_encoder:
