@@ -31,6 +31,10 @@ class GitPageManager:
 		},{
 			"name":"ArteBot",
 			"target":"depotPage:arteBot:MythologicArteBot.git"
+		},
+		{
+			"name":"ObsercormaLang",
+			"target":"depotPage:obsercormaLang:ObsercormaLang.git"
 		}
 	]
 
